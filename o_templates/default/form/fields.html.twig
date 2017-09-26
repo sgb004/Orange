@@ -1,0 +1,107 @@
+{% macro row( form, name, aField = {}, aLabel = {}, aRow = {}  ) %}
+	<div {{ _self.attrs( form.row(name), aRow ) }}>
+		<div class="col-xs-12 col-md-4 text-right">
+			{{ _self.label( form, name, aLabel ) }}
+		</div>
+		<div class="col-xs-12 col-md-5 form-group">
+			{{ _self.field( form, name, aField ) }}
+			{{ _self.errors( form, name ) }}
+		</div>
+	</div>
+{% endmacro %}
+
+{% macro rows( form ) %}
+	{% for name,field in form.getFields() %}
+		{% if field.type == 'HiddenType' or field.type == 'TokenType' %}
+			{{ _self.field( form, name ) }}
+			{{ _self.errors( form, name ) }}
+		{% else %}
+			{{ _self.row( form, name ) }}
+		{% endif %}
+	{% endfor %}
+{% endmacro %}
+
+{% macro label( form, name, ao = {} ) %}
+	{% set a = form.label(name) %}
+	{% if a is empty %}
+	{% else %}
+	<label {{ _self.attrs( a.attrs, ao ) }}>{{ a.text }}:{% if a.required %} <abbr class="required">*</abbr>{% endif %}</label>
+	{% endif %}
+{% endmacro %}
+
+{% macro field( form, name, ao = {} ) %}
+	{% set a = form.field(name) %}
+	{% if a.type == 'radio' %}
+		{{ _self.field_radio( a, ao ) }}
+	{% elseif a.type == 'select' %}
+		{{ _self.field_select( a, ao ) }}
+	{% elseif a.type == 'textarea' %}
+		{{ _self.field_textarea( a, ao ) }}
+	{% elseif a.type == 'submit' %}
+		{{ _self.field_submit( a, ao ) }}
+	{% else %}
+		<input type="{{ a.type }}" name="{{ a.name }}" id="{{ a.id }}" value="{{ a.value }}" {{ _self.attrs( a.attrs, ao, 'form-control' ) }} {% if a.required %}required{% endif %} >
+	{% endif %}
+{% endmacro %}
+
+{% macro field_radio( a, ao = {} ) %}
+	{% set i = 0 %}
+	<div class="field-choise-rachek-children">
+		{% for key, choice in a.choices %}
+			<div class="field-choise-rachek">
+				<input type="radio" name="{{ a.name }}" id="{{ a.id }}_{{ i }}" value="{{ key }}" {{ _self.attrs( a.attrs, ao, 'form-control' ) }} {% if a.required %}required{% endif %} {% if key == a.value %}checked{% endif %} >
+				<label for="{{ a.id }}_{{ i }}">{{ choice }}</label>
+			</div>
+			{% set i = 1 + i %}
+		{% endfor %}
+	</div>
+{% endmacro %}
+
+{% macro field_select( a, ao = {} ) %}
+	<select name="{{ a.name }}" id="{{ a.id }}" {{ _self.attrs( a.attrs, ao, 'form-control' ) }} {% if a.required %}required{% endif %} >
+		{% for key, choice in a.choices %}
+			<option value="{{key}}" {% if key == a.value %}selected{% endif %}>{{choice}}</option>
+		{% endfor %}
+	</select>
+{% endmacro %}
+
+{% macro field_textarea( a, ao = {} ) %}
+	<textarea type="{{ a.type }}" name="{{ a.name }}" id="{{ a.id }}" {{ _self.attrs( a.attrs, ao, 'form-control' ) }} {% if a.required %}required{% endif %} >{{ a.value }}</textarea>
+{% endmacro %}
+
+{% macro field_submit( a, ao = {} ) %}
+	<button type="submit" name="{{ a.name }}" id="{{ a.id }}" {{ _self.attrs( a.attrs, ao, 'btn btn-blue' ) }}><span>{{ a.text }}</span></button>
+{% endmacro %}
+
+{% macro errors( form, name ) %}
+	{% set e = form.errors( name ) %}
+	{% for msg in e %}
+		<div class="alert alert-dismissable alert-danger">{{ msg }}</div>
+	{% endfor %}
+{% endmacro %}
+
+{% macro attrs( a, ao = {}, class = '' ) %}
+	{% if a.class  %}
+		{% set class = class ~ ' ' ~ a.class %}
+	{% endif %}
+	{% set a = a|merge( { 'class': class } ) %}
+
+	{% if a.class %}
+		{% if ao.class %}
+			{% set class = a.class ~ ' ' ~ ao.class %}
+			{% set ao = ao|merge( { 'class': class } ) %}
+		{% endif %}
+	{% endif %}
+
+	{% set a = a|merge( ao ) %}
+
+	{% for key, attribute in a %}
+		{{ key }}="{{ attribute }}"
+	{% endfor %}
+{% endmacro %}
+
+{% macro notices( form ) %}
+	{% for notice in form.getNotices() %}
+		<div class="form-group alert alert-dismissable alert-{{ notice.type }}">{{ notice.msg }}</div>
+	{% endfor %}
+{% endmacro %}

@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" />
+		<title>Site</title>
+
+		<style type="text/css">
+			body{width: 100%; background-color: #ffffff; margin:0; padding:0; -webkit-font-smoothing: antialiased;mso-margin-top-alt:0px; mso-margin-bottom-alt:0px; mso-padding-alt: 0px 0px 0px 0px;}
+
+			p,h1,h2,h3,h4{margin-top:0;margin-bottom:0;padding-top:0;padding-bottom:0;}
+
+			span.preheader{display: none; font-size: 1px;}
+
+			html{width: 100%;}
+
+			table{font-size: 12px;border: 0;}
+
+			.menu-space{padding-right:25px;}
+
+			@media only screen and (max-width:640px){
+				body{width:auto!important;}
+				body[yahoo] .main {width:440px !important;}
+				body[yahoo] .two-left{width:420px !important; margin:0px auto;}
+				body[yahoo] .full{width:100% !important; margin:0px auto;}
+				body[yahoo] .alaine{ text-align:center;}
+				body[yahoo] .menu-space{padding-right:0px;}
+				body[yahoo] .banner{width:438px !important;}
+				body[yahoo] .menu{width:438px !important; margin:0px auto; border-bottom:#e1e0e2 solid 1px;}
+				body[yahoo] .date{width:438px !important; margin:0px auto; text-align:center;}
+				body[yahoo] .two-left-inner{width:400px !important; margin:0px auto;}
+				body[yahoo] .menu-icon{ display:block;}
+				body[yahoo] .two-left-menu{text-align:center;}
+			}
+
+			@media only screen and (max-width:479px){
+				body{width:auto!important;}
+				body[yahoo] .main {width:310px !important;}
+				body[yahoo] .two-left{width:300px !important; margin:0px auto;}
+				body[yahoo] .full{width:100% !important; margin:0px auto;}
+				body[yahoo] .alaine{ text-align:center;}
+				body[yahoo] .menu-space{padding-right:0px;}
+				body[yahoo] .banner{width:308px !important;}
+				body[yahoo] .menu{width:308px !important; margin:0px auto; border-bottom:#e1e0e2 solid 1px;}
+				body[yahoo] .date{width:308px !important; margin:0px auto; text-align:center;}
+				body[yahoo] .two-left-inner{width:280px !important; margin:0px auto;}
+				body[yahoo] .menu-icon{ display:none;}
+				body[yahoo] .two-left-menu{width:310px !important; margin:0px auto;}
+			}
+		</style>
+	</head>
+
+	<body yahoo="fix" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+
+		<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff" id="backgroundTable" module="Menu">
+			<tbody>
+				<tr>
+					<td align="center" valign="top">
+						<table width="650" border="0" align="center" cellpadding="0" cellspacing="0" class="main">
+							<tbody>
+								<tr>
+									<td height="35" align="center" valign="top" style="line-height:35px;">&nbsp;</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- Header Start-->
+
+		<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff" id="backgroundTable" module="Menu">
+			<tbody>
+				<tr>
+					<td align="center" valign="top">
+						{% block header %}
+							<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="main" style="width: 100%; max-width: 650px;">
+								<tbody>
+									<tr>
+										<td width="100%" align="center" valign="top" bgcolor="#000000" style="width: 100%; max-width: 650px; height: auto; border-radius: 4px 4px 0px 0px; background-color: #000000;" class="banImg inner-bgcolor">
+											<a href="{{ url }}" target="_blank" style="display: block; height: 433px; width: 100%; max-width: 650px; height: auto;">			
+												<img style="display: block; border-radius: 4px 4px 0px 0px; width: 100%; max-width: 650px; height: auto;" src="cid:header">
+											</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						{% endblock %}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- Header End-->
+
+		<!-- Text part Start-->
+
+		<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff" id="backgroundTable" module="Menu">
+			<tbody>
+				<tr>
+					<td align="center" valign="top">
+						<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="main" style="width: 100%; max-width: 650px;">
+							<tbody>
+								<tr>
+									<td align="center" valign="top" bgcolor="#f0f0f0" style="background:#f0f0f0; -moz-border-radius:0px 0px 4px 4px;border-radius:0px 0px 4px 4px;">
+										<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="two-left-inner" style="width: 100%; max-width: 650px; padding: 0 40px;">
+
+											<tbody>
+												<tr>
+													<td align="center" valign="top">
+														<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+															<tbody>
+																<tr>
+																	<td height="60" align="center" valign="top" style="line-height:60px;">&nbsp;</td>
+																</tr>
+																<tr>
+																	<td align="center" valign="top">
+																		{% block body %}
+																		{% endblock %}
+																	</td>
+																</tr>
+																<tr>
+																	<td align="center" valign="top">
+																		<table width="200" border="0" align="left" cellpadding="0" cellspacing="0">
+																			<tbody>
+																				<tr>
+																					<td align="center" valign="middle">&nbsp;</td>
+																				</tr>
+																				<tr class="imageUpload">
+																					<td align="center" valign="middle" style="position: relative;"></td>
+																				</tr>
+																			</tbody>
+																		</table>
+																	</td>
+																</tr>
+															</tbody>
+														</table>
+													</td>
+												</tr>
+												<tr>
+													<td height="45" align="center" valign="top" style="line-height:45px;">&nbsp;</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- Text part End-->
+
+		<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#ffffff" id="backgroundTable" module="Menu">
+			<tbody>
+				<tr>
+					<td align="center" valign="top">
+						<table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" class="main" style="width: 100%; max-width: 570px;">
+							<tbody>
+								<tr>
+									<td height="35" align="center" valign="top" style="line-height:35px;">&nbsp;</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</body>
+</html>

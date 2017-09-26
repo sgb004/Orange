@@ -1,0 +1,19 @@
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpg "access 1 year"
+ExpiresByType image/jpeg "access 1 year"
+ExpiresByType image/gif "access 1 year"
+ExpiresByType image/png "access 1 year"
+</IfModule>
+
+RewriteEngine On
+#Options +FollowSymLinks
+#RewriteRule ^test_1\.php http://%{HTTP_HOST}%{REQUEST_URI}/../test_2.php [L]
+
+#RewriteCond http://%{HTTP_HOST}%{REQUEST_URI}/
+#RewriteRule ^.+?/((img|css|js)/.+)$ /$1 [L,R=301,NC]
+
+RewriteEngine On
+RewriteRule .* - [E=DEVMD_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteCond %{REQUEST_URI} !(\.css|\.js|\.png|\.jpg|\.gif|\.woff|\.woff2|\.ttf|\.svg|\.mp4|\.ogv|\.webm|\.map|\.ics|\.json|robots\.txt|robots\.txt)$ [NC]
+RewriteRule ^(.*)$ index.php [L]

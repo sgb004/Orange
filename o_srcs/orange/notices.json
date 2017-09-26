@@ -1,0 +1,10 @@
+{
+	"error_email_password": "Su usuario y/o contraseña son incorrectos",
+	"error_empty_email_password": "Please, write an email address and a password",
+	"account_was_created": "Your account was created, please, confirm your email",
+	"form_error": "There was an error processing the form",
+	"error_new_account": "There was an error to send email to confirm email",
+	"account_confirmed": "Your email was confirmed. You can use your account",
+	"error_account_confirmed": "The token already was used or it does not exist",
+	"error_register": "There was an error to register user"
+}
