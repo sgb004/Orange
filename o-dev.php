@@ -12,6 +12,10 @@ if( isset( $argv[1] ) ){
 	switch ( $argv[1] ){
 		case 'update':
 			require_once ABSPATH.'o_dev/update.php';
+			break;
+		case 'add_module':
+			require_once ABSPATH.'o_dev/add_module.php';
+			break;
 	}
 }
 ?>

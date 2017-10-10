@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) or exit( 'Por favor use o-dev.' );
 echo 'Actualizando rutas.'."\r\n";
 $routesFull = '<?php $routes = array(';
 $MODULES = array_reverse( $MODULES );
