@@ -5,12 +5,12 @@
  */
 
 class Password{
-	private $letter = 25;
+	private $letter = 19;
 	private $letters = array();
 	private $lettersSize = 0;
 
 	function __construct(){
-		$this->letters = array( '-', '&', '.', ';', '$', '*', '#', '%', '-' );
+		$this->letters = array( '_', '&', '.', '*', ';', '#', '%', '-', '$' );
 		$this->lettersSize = sizeof($this->letters);
 		$this->lettersSize -= 1;
 	}

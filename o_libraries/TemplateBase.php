@@ -4,9 +4,10 @@ require ABSPATH.O_LIBRARIES.'Twig/Autoloader.php';
 /**
  * Permite imprimir un template del modulo, se sustituye todo el codigo para dar paso a Twig
  * @class Template
- * @version 2.0
+ * @version 3.0
+ * @author @sgb004
  */
-class Template{
+class TemplateBase{
 	static public $twig;
 	static public $url = '';
 	static public $urlTemplate = '';
@@ -17,29 +18,33 @@ class Template{
 	 * Inicia Twig
 	 */
 	static function init(){
-		self::$url = URL.self::$path.'/';
-		self::$urlTemplate = self::$url.$GLOBALS['template'].'/';
-		self::$path = ABSPATH.self::$path.'/';
-		self::$pathTemplate = self::$path.$GLOBALS['template'].'/';
+		if( !self::$twig ){
+			self::$url = URL.self::$path.'/';
+			self::$urlTemplate = self::$url.$GLOBALS['template'].'/';
+			self::$path = ABSPATH.self::$path.'/';
+			self::$pathTemplate = self::$path.$GLOBALS['template'].'/';
 
-		Twig_Autoloader::register();
-		$twigLoader = new Twig_Loader_Filesystem( array( ABSPATH, self::$pathTemplate) );
-		self::$twig = new Twig_Environment($twigLoader, array(
-			'cache' => false
-			//'cache' => ABSPATH.'/o_cache/'
-		));
-		$twigFunction = new Twig_SimpleFunction('asset', function($path, $t = ''){
-			$path = str_replace('..', '', $path);
-			if( $t == '' ){
-				$t = $GLOBALS['template'];
-			}
-			echo Template::$url.$t.'/'.$path;
-		});
-		self::$twig->addFunction( $twigFunction );
-		self::$twig->addGlobal( 'url', URL );
-		self::$twig->addGlobal( 'notices', new Notices() );
-		self::$twig->addGlobal( 'session', false );
+			Twig_Autoloader::register();
+			$twigLoader = new Twig_Loader_Filesystem(self::$pathTemplate);
+			self::$twig = new Twig_Environment($twigLoader, Template::getSettings());
+			Template::customFunctions();
+			self::$twig->addGlobal( 'url', URL );
+			self::$twig->addGlobal( 'notices', new Notices() );
+			self::$twig->addGlobal( 'session', false );
+		}
 	}
+
+	/**
+	 * Carga las opciones con las que funcionará twig
+	 */
+	protected static function getSettings(){
+		return array();
+	}
+
+	/**
+	 * Carga las funciones personalizadas
+	 */
+	protected static function customFunctions(){}
 
 	/**
 	 * Rederiza la vista

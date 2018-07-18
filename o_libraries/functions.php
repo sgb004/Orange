@@ -1,5 +1,12 @@
 <?php
 /**
+ * Funciones comunes usadas en Orange
+ *
+ * @version 3.0
+ * @author @sgb004
+ */
+
+/**
  * Busca la clase en los recursos srsc o en el directorio libreraies
  */
 function oIncludeClases($class, $dir=''){
@@ -22,6 +29,8 @@ function oIncludeClases($class, $dir=''){
 					$path = ABSPATH.O_SRCS.$key.'/models/'.$class.'.php';
 					if( file_exists($path) ){ break; }
 					$path = ABSPATH.O_SRCS.$key.'/controllers/'.$class.'.php';
+					if( file_exists($path) ){ break; }
+					$path = ABSPATH.O_SRCS.$key.'/forms/'.$class.'.php';
 					if( file_exists($path) ){ break; }
 					$path = ABSPATH.O_SRCS.$class.'.php';
 					if( file_exists($path) ){ break; }
@@ -48,5 +57,16 @@ function oRedirect($link=''){
 		header('Location: '.$link);
 		exit;
 	}
+}
+
+/**
+ * Convierte un texto a tipo camel prueba_variable -> pruebaVariable
+ */
+function oConvertCamel( $s ){
+	$s = str_replace( '_', ' ', $s );
+	$s = ucwords( $s );
+	$s = str_replace( ' ', '', $s );
+	$s = lcfirst( $s );
+	return $s;
 }
 ?>

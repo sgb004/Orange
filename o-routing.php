@@ -2,20 +2,32 @@
 $routes = array(
 	'download' => array(
 		'paths' => array('/download', '/download/', '/descargar', '/descargar/'),
-		'm' => 'registrations',
-		'c' => 'registrations',
+		'm' => 'leads',
+		'c' => 'Leads',
 		'v' => 'download'
 	),
-	'register' => array(
-		'paths' => array('/register', '/register/'),
-		'm' => 'registrations',
-		'c' => 'registrations',
-		'v' => 'register'
+	'thanks' => array(
+		'paths' => array('/thanks', '/thanks/', '/gracias', '/gracias/'),
+		'm' => 'leads',
+		'c' => 'Leads',
+		'v' => 'thanks'
+	),
+	'add' => array(
+		'paths' => array('/add', '/add/'),
+		'm' => 'leads',
+		'c' => 'Leads',
+		'v' => 'add'
+	),
+	'test_mailing' => array(
+		'paths' => array('/test_mailing', '/test_mailing/'),
+		'm' => 'leads',
+		'c' => 'Leads',
+		'v' => 'testMailing'
 	),
 	'home' => array(
 		'paths' => array('/'),
-		'm' => 'registrations',
-		'c' => 'registrations',
+		'm' => 'leads',
+		'c' => 'Leads',
 		'v' => 'index'
 	)
 )

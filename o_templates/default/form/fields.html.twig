@@ -1,12 +1,9 @@
 {% macro row( form, name, aField = {}, aLabel = {}, aRow = {}  ) %}
+	{% set aRow = aRow|merge( { 'class': 'form-group ' ~ aRow.class } ) %}
 	<div {{ _self.attrs( form.row(name), aRow ) }}>
-		<div class="col-xs-12 col-md-4 text-right">
-			{{ _self.label( form, name, aLabel ) }}
-		</div>
-		<div class="col-xs-12 col-md-5 form-group">
-			{{ _self.field( form, name, aField ) }}
-			{{ _self.errors( form, name ) }}
-		</div>
+		{{ _self.label( form, name, aLabel ) }}
+		{{ _self.field( form, name, aField ) }}
+		{{ _self.errors( form, name ) }}
 	</div>
 {% endmacro %}
 
@@ -25,7 +22,8 @@
 	{% set a = form.label(name) %}
 	{% if a is empty %}
 	{% else %}
-	<label {{ _self.attrs( a.attrs, ao ) }}>{{ a.text }}:{% if a.required %} <abbr class="required">*</abbr>{% endif %}</label>
+	{% set ao = ao|merge( { 'class': 'col-sm-2 control-label ' ~ a.attrs.class } ) %}
+	<label {{ _self.attrs( a.attrs, ao ) }}>{{ a.text }}{% if a.required %} <abbr class="required">*</abbr>{% endif %}</label>
 	{% endif %}
 {% endmacro %}
 
@@ -33,6 +31,8 @@
 	{% set a = form.field(name) %}
 	{% if a.type == 'radio' %}
 		{{ _self.field_radio( a, ao ) }}
+	{% elseif a.type == 'checkbox' %}
+		{{ _self.field_checkbox( a, ao ) }}
 	{% elseif a.type == 'select' %}
 		{{ _self.field_select( a, ao ) }}
 	{% elseif a.type == 'textarea' %}
@@ -48,10 +48,29 @@
 	{% set i = 0 %}
 	<div class="field-choise-rachek-children">
 		{% for key, choice in a.choices %}
-			<div class="field-choise-rachek">
+			<label class="field-choise-rachek">
 				<input type="radio" name="{{ a.name }}" id="{{ a.id }}_{{ i }}" value="{{ key }}" {{ _self.attrs( a.attrs, ao, 'form-control' ) }} {% if a.required %}required{% endif %} {% if key == a.value %}checked{% endif %} >
-				<label for="{{ a.id }}_{{ i }}">{{ choice }}</label>
-			</div>
+				{{ choice|raw }}
+				<span class="rachek-icons">
+					
+				</span>
+			</label>
+			{% set i = 1 + i %}
+		{% endfor %}
+	</div>
+{% endmacro %}
+
+{% macro field_checkbox( a, ao = {} ) %}
+	{% set i = 0 %}
+	<div class="field-choise-rachek-children">
+		{% for key, choice in a.choices %}
+			<label class="field-choise-rachek">
+				<input type="checkbox" name="{{ a.name }}" id="{{ a.id }}_{{ i }}" value="{{ key }}" {{ _self.attrs( a.attrs, ao, 'form-control' ) }} {% if a.required %}required{% endif %} {% if key == a.value %}checked{% endif %} >
+				{{ choice|raw }}
+				<span class="rachek-icons">
+					<svg height="32" id="check" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg"><path d="M1 14 L5 10 L13 18 L27 4 L31 8 L13 26 z"/></svg>
+				</span>
+			</label>
 			{% set i = 1 + i %}
 		{% endfor %}
 	</div>
@@ -70,14 +89,17 @@
 {% endmacro %}
 
 {% macro field_submit( a, ao = {} ) %}
-	<button type="submit" name="{{ a.name }}" id="{{ a.id }}" {{ _self.attrs( a.attrs, ao, 'btn btn-blue' ) }}><span>{{ a.text }}</span></button>
+	<button type="submit" name="{{ a.name }}" id="{{ a.id }}" {{ _self.attrs( a.attrs, ao, 'btn btn-yellow' ) }}><span>{{ a.text }}</span></button>
+	<ul class="notices"></ul>
 {% endmacro %}
 
 {% macro errors( form, name ) %}
 	{% set e = form.errors( name ) %}
+	<ul class="field-notices">
 	{% for msg in e %}
-		<div class="alert alert-dismissable alert-danger">{{ msg }}</div>
+		<li class="danger">{{ msg }}</li>
 	{% endfor %}
+	</ul>
 {% endmacro %}
 
 {% macro attrs( a, ao = {}, class = '' ) %}
@@ -102,6 +124,6 @@
 
 {% macro notices( form ) %}
 	{% for notice in form.getNotices() %}
-		<div class="form-group alert alert-dismissable alert-{{ notice.type }}">{{ notice.msg }}</div>
+		<li class="{{ notice.type }}">{{ notice.msg }}</li>
 	{% endfor %}
 {% endmacro %}

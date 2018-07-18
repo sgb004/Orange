@@ -1,7 +1,9 @@
 <?php
-class TokenController{
-	static function get( $type = 0, $time = '-1 hour', $userId = 0 ){
-		$token = new Token();
+class TokensController{
+	static public $tokenModel = 'TokensModel';
+
+	static function get( $type = 0, $time, $userId = 0 ){
+		$token = new self::$tokenModel( $type, $time );
 		$token->ip = $_SERVER['REMOTE_ADDR'];
 		$token->userId = $userId;
 		$token->setType( $type );
@@ -15,17 +17,17 @@ class TokenController{
 		return $token->tokenKey;
 	}
 
-	static function check( $tokenKey, $type = 0, $time = '-1 hour', $userId = 0 ){
-		$token = new Token();
+	static function check( $tokenKey, $type = 0, $time, $userId = 0, $log = false ){
+		$token = new self::$tokenModel( $type, $time );
 		$token->ip = $_SERVER['REMOTE_ADDR'];
 		$token->tokenKey = $tokenKey;
 		$token->userId = $userId;
 		$token->setType( $type );
-		return $token->check();
+		return $token->check( $log );
 	}
 
-	static function delete( $tokenKey, $type = 0, $time = '-1 hour', $userId = 0 ){
-		$token = new Token();
+	static function delete( $tokenKey, $type = 0, $time, $userId = 0 ){
+		$token = new self::$tokenModel( $type, $time );
 		$token->tokenKey = $tokenKey;
 		$token->userId = $userId;
 		$token->setType( $type );

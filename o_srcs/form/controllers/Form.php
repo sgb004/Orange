@@ -99,7 +99,7 @@ class Form{
 	 * Convierte las carateristcas del field en un objeto
 	 */
 	private function getField( $name ){
-		if( is_array($this->fields[ $name ]) ){
+		if( is_array( $this->fields[ $name ] ) ){
 			$this->fields[ $name ] = new $this->fields[ $name ]['type']( $this->fields[ $name ]['prop']  );
 		}
 		return $this->fields[ $name ];
@@ -161,7 +161,7 @@ class Form{
 					}
 
 					if( $this->_isValid ){
-						$this->_isValid = $this->applyFilter( 'post_validate_data',  $this, $this->_isValid );
+						$this->_isValid = $this->applyFilter( 'post_validate_data', $this, $this->_isValid );
 					}
 				}
 			}
@@ -192,10 +192,11 @@ class Form{
 				$values[] = $args[$i];
 			}
 
-			$response = $args[ $i - 1 ];
+			$i = $i - 2;
+			$response = $values[ $i ];
 
 			foreach ($this->filters[ $key ] as $fn) {
-				$response = call_user_func_array( $fn , $values );
+				$response = $values[ $i ] = call_user_func_array( $fn, $values );
 			}
 		}
 
@@ -227,6 +228,24 @@ class Form{
 				}
 			}
 		}
+	}
+
+	/**
+	 *
+	 */
+	public function setProperty( $fieldName, $property, $value, $propValue = '' ){
+		if( $property == 'attrs' ){
+			$this->fields[ $fieldName ]['prop'][ 'attrs' ][ $value ] = $propValue;
+		}else{
+			$this->fields[ $fieldName ]['prop'][ $property ] = $value;
+		}
+	}
+
+	/**
+	 *
+	 */
+	public function addFieldError( $fieldName, $notice ){
+		$this->fields[ $fieldName ]->addError( $notice );
 	}
 }
 ?>

@@ -33,7 +33,6 @@ class FileType extends TextType{
 			$default = ( $this->multiple ) ? $this->default : array( $this->default );
 			foreach ($default as $file) {
 				$errorFile = isset( $file['error'] ) ? $file['error'] : 1;
-
 				if( $errorFile != 0 ){
 					$this->_isEmpty = true;
 					$this->addError( $this->notice );
@@ -80,6 +79,23 @@ class FileType extends TextType{
 		}
 
 		return $isValid;
+	}
+
+	public function render(){
+		$a = parent::render();
+		$attrs = array(
+			'data-types-file-error' => $this->typesFileError,
+			'data-size-max' => $this->sizeMax,
+			'data-size-max-error' => $this->sizeMaxError
+		);
+
+		if( !empty( $this->typesFile ) ){
+			$attrs['data-types-file'] = implode( '|', $this->typesFile );
+			$attrs['data-types-file'] = '^('.$attrs['data-types-file'].')$';
+		}
+
+		$a['attrs'] = $a['attrs'] + $attrs;
+		return $a;
 	}
 }
 ?>

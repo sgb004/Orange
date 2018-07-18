@@ -1,33 +1,41 @@
 <?php
-class RegistrationsController{
-	function indexAction(){
-		Template::render( 'registrations/home.html.twig', array( 'form' => $this->registerForm() ) );
+class LeadsController{
+	public function indexAction(){
+		Template::render( 'leads/home.html.twig', array( 'form' => $this->getForm() ) );
 	}
 
-	private function registerForm(){
-		$form = new Form( 'registration' );
+	protected function getModel(){
+		return new Leads();
+	}
+
+	protected function getForm(){
+		$form = new Form( 'lead_form_add' );
 		$form
 			//->addToken()
 			->add( 'name', 'TextType', array(
-				'attrs' => array( 'placeholder' => 'Nombre' )
+				'attrs' => array( 'placeholder' => 'Nombre:' )
 			))
 			->add( 'email' , 'EmailType', array(
-				'attrs' => array( 'placeholder' => 'Correo electrónico' )
+				'attrs' => array( 'placeholder' => 'Correo electrónico:' )
 			))
 			->add( 'phone', 'NumberType', array(
-				'attrs' => array( 'placeholder' => 'Teléfono' )
+				'attrs' => array( 'placeholder' => 'Teléfono:' )
 			))
-			->add( 'comments' , 'TextAreaType', array(
-				'attrs' => array( 'placeholder' => 'Mensaje' )
+			->add( 'message', 'TextAreaType', array(
+				'attrs' => array( 'placeholder' => 'Mensaje:', 'rows' => 5 )
+			))
+			->add( 'terms', 'MultiChoiceType', array(
+				'choices' => array( 1 => 'He leído y aceptado el <a href="" target="_blank">Aviso de Privacidad</a>' )
 			))
 			->add( 'submit', 'SubmitType', array(
 				'text' => 'ENVIAR'
 			));
+	
 		return $form;
 	}
 
-	function registerAction(){
-		$form = $this->registerForm();
+	public function addLead( $campaign = '' ){
+		$form = $this->getForm();
 
 		if( $_POST ){
 			$r = array( 'success' => false, 'fields' => array(), 'notice' => '' );
@@ -37,49 +45,50 @@ class RegistrationsController{
 			if( $form->isValid() ){
 				$fields = $form->getFields();
 
-				$data = array(
-					'name' =>  $fields['name']->default,
-					'email' =>  $fields['email']->default,
-					'phone' =>  $fields['phone']->default,
-					'comments' =>  $fields['comments']->default
-				);
+				$data = array();
+				$leads = $this->getModel();
 
-				$records = new Registrations();
-				$r = $records->add( $data );
+				$leads->name = $data['name'] = $fields['name']->default;
+				$leads->email = $data['email'] = $fields['email']->default;
+				$leads->phone = $data['phone'] = $fields['phone']->default;
+				$leads->solution = $data['solution'] = $fields['solution']->default;
+				$leads->message = $data['message'] = $fields['message']->default;
+				$leads->campaign = $data['campaign'] = $campaign;
 
-				$r = array( 'success' => true, 'fields' => '', 'notice' => 'Gracias, su mensaje ha sido enviado.' );
+				$r = $leads->add();
+
+				$r = array( 'success' => true, 'fields' => '', 'notice' => '' );
 				
 				//Envia correo al usuario
 				$mail = new OrangeEmail;
-				/*/
+
 				$mail->IsSMTP();
 				$mail->SMTPAuth = true;
 				$mail->Host = ''; // SMTP a utilizar. Por ej. smtp.elserver.com
 				$mail->Username = ''; // Correo completo a utilizar
 				$mail->Password = ''; // Contraseña
 				$mail->Port = 25; // Puerto a utilizar
-				/*/
-				$mail->Subject = 'Gracias por registrarse en el sitio';
+
+				$mail->Subject = 'Gracias por contactarnos - ';
 				$mail->Body = Template::getView( 'mailing/new_user.html.twig' );
 				$mail->addAddress( $data['email'] );
-				$mail->AddEmbeddedImage( ABSPATH.'images/mailing.jpg', 'header', URL.'images/mailing.jpg', 'base64', 'image/jpeg' );
+				$mail->AddEmbeddedImage( ABSPATH.'images/header-mailing.jpg', 'header', URL.'images/header-mailing.jpg', 'base64', 'image/jpeg' );
 				$mail->send();
-
 
 				//Envia correo al adminsitrador
 				$mail = new OrangeEmail;
-				/*/
+
 				$mail->IsSMTP();
 				$mail->SMTPAuth = true;
 				$mail->Host = ''; // SMTP a utilizar. Por ej. smtp.elserver.com
 				$mail->Username = ''; // Correo completo a utilizar
 				$mail->Password = ''; // Contraseña
 				$mail->Port = 25; // Puerto a utilizar
-				/*/
-				$mail->Subject = 'Nuevo registro en el sitio';
+
+				$mail->Subject = ' | Nuevo registro desde el landing '.$campaign;
 				$mail->Body = Template::getView( 'mailing/admin_new_user.html.twig', $data );
 				$mail->addAddress( ADMIN_MAIL );
-				$mail->AddEmbeddedImage( ABSPATH.'images/mailing.jpg', 'header', URL.'images/mailing.jpg', 'base64', 'image/jpeg' );
+				$mail->AddEmbeddedImage( ABSPATH.'images/header-mailing.jpg', 'header', URL.'images/header-mailing.jpg', 'base64', 'image/jpeg' );
 				$mail->send();
 			}else{
 				$r[ 'notice' ] = $form->getNotices();
@@ -92,13 +101,40 @@ class RegistrationsController{
 			Template::renderJson( $r );
 		}
 
-		Template::render( 'registrations/home.html.twig', array( 'form' => $form ) );
+		$this->indexAction();
 	}
 
-	function downloadAction(){
+	public function thanksAction(){
+		Template::render( 'leads/thanks.html.twig' );
+	}
+
+	protected function downloadConfig(){
+		return array(
+			'login' => array(
+				'title' => 'Descargar los usuarios registrados',
+				'users' => array(),
+			),
+			'file' => array(
+				'name' => 'Reporte',
+				'sheetTitle' => 'Usuarios registrados',
+				'headers' => array(
+					'lead_id' => '#',
+					'name' => 'Nombre',
+					'email' => 'Correo electrónico',
+					'phone' => 'Teléfono',
+					'register_date' => 'Fecha de registro'
+				),
+				'headerColor' => '01a4ff',
+				'rowZebraColor' => 'c7e494'
+			)
+		);
+	}
+
+	function download(){
+		$c = $this->downloadConfig();
 		//
-		$realm = "Descargar los usuarios registrados";
-		$users = array('sitio' => 'contrasenia');
+		$realm = $c['login']['title'];
+		$users = $c['login']['users'];
 
     	// Here is the FIX
 	    if(empty($_SERVER['PHP_AUTH_DIGEST'])){
@@ -123,7 +159,7 @@ class RegistrationsController{
 				$valid_response = md5($A1.':'.$data['nonce'].':'.$data['nc'].':'.$data['cnonce'].':'.$data['qop'].':'.$A2);
 
 				if ($data['response'] == $valid_response){
-					$this->makeXls();
+					$this->makeXls( $c['file'] );
 				}
 			}
 		}else{
@@ -147,20 +183,13 @@ class RegistrationsController{
 		return $needed_parts ? false : $data;
 	}
 
-	protected function makeXls(){
+	protected function makeXls( $c ){
 		require ABSPATH.O_LIBRARIES.'PHPExcel/PHPExcel.php';
 
-		$fileName = 'Registros';
-		$sheetTitle = 'Usuarios registrados';
+		$fileName = $c['name'];
+		$sheetTitle = $c['sheetTitle'];
 		$widthMin = 12;
-		$headers = array(
-			'#',
-			'Nombre',
-			'Correo electrónico',
-			'Teléfono',
-			'Mensaje',
-			'Fecha de registro'
-		);
+		$headers = $c['headers'];
 
 		//
 		$objPHPExcel = new PHPExcel();
@@ -168,11 +197,13 @@ class RegistrationsController{
 		$activeSheet = $objPHPExcel->getActiveSheet();
 		$activeSheet->setTitle( $sheetTitle );
 
-		$registrations = new Registrations();
-		$registrations = $registrations->get();
+		$leads = $this->getModel();
+		$leads = $leads->get();
 
 		$i = 0;
-		foreach ($headers as $header) {
+		$model = array();
+		foreach ($headers as $key => $header) {
+			$model[$key] = '';
 			$activeSheet->setCellValueByColumnAndRow( $i, 1, $header );
 			$activeSheet->getColumnDimension( PHPExcel_Cell::stringFromColumnIndex($i) )->setAutoSize(true);
 			$i++;
@@ -190,7 +221,7 @@ class RegistrationsController{
 			),
 			'fill' => array(
 				'type' => PHPExcel_Style_Fill::FILL_SOLID,
-				'startcolor' => array('rgb' => '5a2f90')
+				'startcolor' => array('rgb' => $c['headerColor'])
 			)
 		));
 		$activeSheet->freezePane( 'A2' );
@@ -198,19 +229,28 @@ class RegistrationsController{
 		//Registros
 		$i = 2;
 		$color = true;
-		foreach ($registrations as $registration) {
-			$activeSheet->setCellValueByColumnAndRow( 0, $i, $registration['registration_id'] );
-
-			unset( $registration['registration_id'] );
-			$registerDate = '';
-			if( $registration['register_date'] != '' && !is_null($registration['register_date']) ){
-				$registerDate = date( 'd/m/Y H:i:s', strtotime( $registration['register_date'] ) );
-				unset( $registration['register_date'] );
+		foreach ($leads as $lead) {
+			if( $lead['register_date'] != '' && !is_null($lead['register_date']) ){
+				$lead['register_date'] = date( 'd/m/Y H:i:s', strtotime( $lead['register_date'] ) );
 			}
-			$registration['register_date'] = $registerDate;
 
-			$j = 1;
-			foreach ($registration as $value) {
+			$m = array();
+			foreach ($model as $key => $value) {
+				$m[ $key ] = $lead[$key];
+			}
+			/*/
+			$activeSheet->setCellValueByColumnAndRow( 0, $i, $lead['registration_id'] );
+
+			unset( $lead['registration_id'] );
+			$registerDate = '';
+			if( $lead['register_date'] != '' && !is_null($lead['register_date']) ){
+				$registerDate = date( 'd/m/Y H:i:s', strtotime( $lead['register_date'] ) );
+				unset( $lead['register_date'] );
+			}
+			$lead['register_date'] = $registerDate;
+			/*/
+			$j = 0;
+			foreach ($m as $value) {
 				$column  = PHPExcel_Cell::stringFromColumnIndex( $j );
 				//$activeSheet->setCellValueByColumnAndRow( $j, $i, utf8_decode($value) );
 				$value = trim( $value );
@@ -225,13 +265,13 @@ class RegistrationsController{
 			if( $color ){
 				$activeSheet->getStyle( 'A'.$i.':'.$columMax.$i )->getFill()
 							->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-							->getStartColor()->setRGB('fffccd');
+							->getStartColor()->setRGB($c['rowZebraColor']);
 				$color = false;
 			}else{
 				$color = true;
 			}
 
-			//$activeSheet->getCellByColumnAndRow(5, $i)->getHyperlink()->setUrl( $registration['file'] );
+			//$activeSheet->getCellByColumnAndRow(5, $i)->getHyperlink()->setUrl( $lead['file'] );
 
 			$i++;
 		}
@@ -291,6 +331,49 @@ class RegistrationsController{
 		header('Cache-Control: max-age=0');
 
 		$objWriter->save('php://output');
+		exit;
+	}
+
+	function testMailingAction(){
+		$r = false;
+
+		$mail = new OrangeEmail;
+
+		$mail->IsSMTP();
+		$mail->SMTPAuth = true;
+		$mail->Host = ''; // SMTP a utilizar. Por ej. smtp.elserver.com
+		$mail->Username = ''; // Correo completo a utilizar
+		$mail->Password = ''; // Contraseña
+		$mail->Port = 25; // Puerto a utilizar
+
+		$mail->Subject = 'Prueba';
+		//$mail->Body = Template::getView( 'mailing/admin_new_user.html.twig' );
+		$mail->Body = Template::getView( 'mailing/new_user.html.twig' );
+		$mail->addAddress( '' );
+		$mail->AddEmbeddedImage( ABSPATH.'images/header-mailing.jpg', 'header', URL.'images/header-mailing.jpg', 'base64', 'image/jpeg' );
+		$r = $mail->send();
+
+		echo '<pre>';
+		print_r( ABSPATH.'images/header-mailing.jpg' );
+		echo '</pre>';
+
+		echo '<pre>';
+		print_r( URL.'images/header-mailing.jpg' );
+		echo '</pre>';
+
+		echo '<pre>';
+		print_r( $mail->From );
+		echo '</pre>';
+
+		echo '<pre>';
+		print_r( $mail->FromName );
+		echo '</pre>';
+
+		echo '<pre>';
+		print_r( 'ENVIADO '.$r );
+		echo '</pre>';
+
+		echo $mail->Body;
 		exit;
 	}
 }

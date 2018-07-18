@@ -38,7 +38,7 @@ class DBSQLite extends DB{
 		}else{
 			if($isSelect == true){
 				while ($obj = $res->fetchArray(SQLITE3_ASSOC)) {
-					$dev[] = (object) $obj;
+					$dev[] = $obj;
 				}
 			}else{
 				$this->insertId = self::$conexion->lastInsertRowid();

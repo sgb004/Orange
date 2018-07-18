@@ -1,9 +1,12 @@
 <?php
-//ORANGE 0.4a by @sgb004
+/**
+ * ORANGE
+ * @author @sgb004
+ * @version 0.5a
+ */
 require ABSPATH.'o-config.php';
 require ABSPATH.O_LIBRARIES.'check_request_content.php';
 require ABSPATH.O_LIBRARIES.'functions.php';
-require ABSPATH.O_LIBRARIES.'Template.php';
 require ABSPATH.O_LIBRARIES.'Notices.php';
 
 function orange(){
@@ -107,6 +110,12 @@ function orange(){
 	define('MODULE', $module);
 	define('CONTROLLER', $controller);
 	define('VIEW', $view);
+
+	if( IS_DEBUG ){
+		require ABSPATH.O_LIBRARIES.'TemplateDebug.php';
+	}else{
+		require ABSPATH.O_LIBRARIES.'TemplateProduction.php';
+	}
 
 	//Init template
 	Template::init();

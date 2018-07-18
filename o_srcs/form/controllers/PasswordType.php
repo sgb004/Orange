@@ -7,19 +7,21 @@ class PasswordType extends TextType{
 	public function validate(){
 		$isValid = parent::validate();
 
-		if( !preg_match('/[0-9]/', $this->default) ){
-			$this->addError( 'Please, include numbers in your password' );
-			$isValid = false;
-		}
+		if( $this->default != '' ){
+			if( !preg_match('/[0-9]/', $this->default) ){
+				$this->addError( 'Por favor, incluye números en la contraseña.' );
+				$isValid = false;
+			}
 
-		if( !preg_match('/[a-zA-Z]/', $this->default) ){
-			$this->addError( 'Please, include letters in your password' );
-			$isValid = false; 
-		}
+			if( !preg_match('/[a-zA-Z]/', $this->default) ){
+				$this->addError( 'Por favor, incluye letras en la contraseña.' );
+				$isValid = false; 
+			}
 
-		if( preg_match('/^[0-9a-zA-Z]+$/', $this->default) ){
-			$this->addError( 'Please, include some special character in your password' );
-			$isValid = false; 
+			if( preg_match('/^[0-9a-zA-Z]+$/', $this->default) ){
+				$this->addError( 'Por favor, incluye algún carácter especial en la contraseña.' );
+				$isValid = false; 
+			}
 		}
 
 		return $isValid;

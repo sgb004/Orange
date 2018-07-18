@@ -20,7 +20,7 @@ class RadioType extends TextType{
 
 	public function validate(){
 		$r = true;
-		if( $this->required ){
+		if( $this->required || $this->default != '' ){
 			$r = array_key_exists( $this->default, $this->choices );
 			if( !$r ){
 				$this->addError( $this->choiceError );

@@ -55,7 +55,7 @@ class TextType{
 
 		if( $this->pattern != '' ){
 			$a['attrs']['data-pattern'] = $this->pattern; 
-			$a['attrs']['data-pattern-error'] = $this->patternError;
+			$a['attrs']['data-pattern-error'] = ( $this->pattern != '' && $this->patternError == '') ? $this->notice : $this->patternError;
 		}
 
 		return $a;

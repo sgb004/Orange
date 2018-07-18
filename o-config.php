@@ -4,7 +4,7 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_DATABASE', 'orange');
+define('DB_DATABASE', '');
 
 define('DB_CHARSET', 'utf8');
 
@@ -12,26 +12,27 @@ define('DB_CHARSET', 'utf8');
 date_default_timezone_set('America/Mexico_City');
 
 //MAIL
-define('ADMIN_MAIL', 'admin_mail@site.com');
-define('NO_REPLY_MAIL', 'no-reply@site.com');
-define('NO_REPLY_MAIL_NAME', 'Sitio');
+define('ADMIN_MAIL', '');
+define('NO_REPLY_MAIL', '');
+define('NO_REPLY_MAIL_NAME', '');
 
 //SITE URL
-define('SITE_URL', 'http://site.com/');
+define('SITE_URL', 'http://sgb004.com/');
 
 //MODULES
-//If you does not define a modules Orange try to find in re-content
-//MODULES
-$MODULES['form'] = array();
 $MODULES['orange'] = array();
-$MODULES['registrations'] = array();
+$MODULES['form'] = array();
+$MODULES['leads'] = array();
 
 //DIRS
 define('O_SRCS','o_srcs/');
 define('O_LIBRARIES','o_libraries/');
 
 //SESSION NAME
-define('SESSION_NAME', 'site');
+define('SESSION_NAME', '');
+
+//DEBUG
+define('IS_DEBUG', true);
 
 //TEMPLATE
 $template = 'default';
